@@ -1,13 +1,5 @@
 # pylint: skip-file
 
-# This is the MXNet version of CDL used in the KDD 2016 hands-on tutorial for MXNet. Note that the code is a simplified version of CDL and is used for demonstration only (you can also find the corresponding IPython notebook). We do not use pretrain and sigmoid activation (as used in the matlab/C++ code for CDL) in this version of code, which may harm the performance.
-
-# To run the code, please type in (after installing MXNet):
-# python cdl.py
-# in the command line.
-
-# Hao WANG, 2016.8.24
-
 import mxnet as mx
 import numpy as np
 import logging
@@ -22,7 +14,7 @@ if __name__ == '__main__':
     K = 8
     p = 4
     is_dummy = False
-    num_iter = 34000
+    num_iter = 10000 # 34000
     batch_size = 256
 
     np.random.seed(1126) # set seed
@@ -34,12 +26,17 @@ if __name__ == '__main__':
     print 'p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d' % (p,lambda_v,lambda_u,lv,K)
     fp.write('p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d\n' % (p,lambda_v,lambda_u,lv,K))
     fp.close()
+    
+    X = loaFeatureData('data/ml-1m/item.txt')
+    R = loadRatingData('data/ml-1m/train.txt')
+    '''
     if is_dummy:
         X = get_dummy_mult()
         R = read_dummy_user()
     else:
         X = get_mult()
         R = read_user()
+    '''
     # set to INFO to see less information during training
     logging.basicConfig(level=logging.DEBUG)
     #ae_model = AutoEncoderModel(mx.gpu(0), [784,500,500,2000,10], pt_dropout=0.2,
@@ -47,7 +44,6 @@ if __name__ == '__main__':
     ae_model = AutoEncoderModel(mx.cpu(2), [X.shape[1],100,K], pt_dropout=0.2, internal_act='relu', output_act='relu')
 
     train_X = X
-
     #ae_model.layerwise_pretrain(train_X, 256, 50000, 'sgd', l_rate=0.1, decay=0.0,
     #                         lr_scheduler=mx.misc.FactorScheduler(20000,0.1))
     #V = np.zeros((train_X.shape[0],10))
