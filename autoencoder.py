@@ -98,8 +98,8 @@ class AutoEncoderModel(model.MXModel):
             auxs['sparse_decoder_%d_moving_avg' % istack] = mx.nd.ones((num_input), self.xpu) * 0.5
         init = mx.initializer.Uniform(0.07)
         for k,v in args.items():
-            init(k,v)
-
+            #init(k,v)
+	    init(mx.init.InitDesc(k), v)
         return x, args, args_grad, args_mult, auxs
 
     def make_encoder(self, data, dims, sparseness_penalty=None, dropout=None, internal_act='relu', output_act=None):
