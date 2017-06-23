@@ -14,7 +14,7 @@ if __name__ == '__main__':
     K = 8
     p = 4
     is_dummy = False
-    num_iter = 10000 # 34000
+    num_iter = 10 # 34000
     batch_size = 256
 
     np.random.seed(1126) # set seed
