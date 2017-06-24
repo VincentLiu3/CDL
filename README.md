@@ -1,7 +1,11 @@
-This is the MXNet version of CDL used in the KDD 2016 hands-on tutorial for MXNet. Note that the code is a simplified version of CDL and is used for demonstration only (you can also find the corresponding IPython notebook). We do not use pretrain and sigmoid activation (as used in the matlab/C++ code for CDL) in this version of code, which may harm the performance.
+# Collaborative Deep Learning for Recommender Systems
+The original code has been taken from [js05212/MXNet-for-CDL](https://github.com/js05212/MXNet-for-CDL) .
+ 
+# Data Format
+Data is stored in matrix in COOrdinate format (scipy.sparse.coo_matrix) to save sapce.
+```
+3944,2641,2
+4644,2015,3
+1119,1980,4
+```
 
-To run the code, please type in (after installing MXNet):
-python cdl.py
-in the command line.
-
-More details on the work and some direct extensions can be found at http://wanghao.in/CDL.htm.
