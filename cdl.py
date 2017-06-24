@@ -11,10 +11,9 @@ import os
 if __name__ == '__main__':
     lambda_u = 1 # lambda_u in CDL
     lambda_v = 10 # lambda_v in CDL
-    K = 8
-    p = 4
-    is_dummy = False
-    num_iter = 10 # 34000
+    K = 8 
+    p = 4 # result will be save in 'cdl%d' % p
+    num_iter = 100 # default = 34000?
     batch_size = 256
 
     np.random.seed(1126) # set seed
@@ -65,3 +64,8 @@ if __name__ == '__main__':
     fp.write("Training error: %.3f\n" % (BCD_loss+Recon_loss))
     fp.close()
     #print "Validation error:", ae_model.eval(val_X)
+
+    rmse = RMSE(p, 'data/ml-1m/train.txt')
+    print('RMSE: {:.4f}'.format(rmse))
+    with open(dir_save+'/cdl.log','a') as fp:
+	fp.write('RMSE: {:.4f}'.format(rmse))

@@ -139,7 +139,7 @@ class Solver(object):
                 print "Epoch %d - tr_err/bcd_err/rec_err: %.1f/%.1f/%.1f" % (epoch,
                     BCD_loss+Recon_loss, BCD_loss, Recon_loss)
                 with open(dir_save+'/cdl.log','a') as fp:
-                	write("Epoch %d - tr_err/bcd_err/rec_err: %.1f/%.1f/%.1f\n" % (epoch, BCD_loss+Recon_loss, BCD_loss, Recon_loss))
+                    fp.write("Epoch %d - tr_err/bcd_err/rec_err: %.1f/%.1f/%.1f\n" % (epoch, BCD_loss+Recon_loss, BCD_loss, Recon_loss))
                 # fp.close()
                 lambda_v_rt[:] = lambda_v_rt_old[:] # back to normal lambda_v_rt
                 data_iter = mx.io.NDArrayIter({'data': X, 'V': V, 'lambda_v_rt':
