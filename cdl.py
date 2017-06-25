@@ -1,5 +1,3 @@
-# pylint: skip-file
-
 import mxnet as mx
 import numpy as np
 import logging
@@ -21,21 +19,12 @@ if __name__ == '__main__':
     dir_save = 'cdl%d' % p
     if not os.path.isdir(dir_save):
         os.system('mkdir %s' % dir_save)
-    fp = open(dir_save+'/cdl.log','w')
-    print 'p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d' % (p,lambda_v,lambda_u,lv,K)
-    fp.write('p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d\n' % (p,lambda_v,lambda_u,lv,K))
-    fp.close()
+    print('p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d' % (p,lambda_v,lambda_u,lv,K) )   
+    with open(dir_save+'/cdl.log','w') as fp:
+        fp.write('p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d\n' % (p,lambda_v,lambda_u,lv,K))
     
-    X = loaFeatureData('data/ml-1m/item.txt')
-    R = loadRatingData('data/ml-1m/train.txt')
-    '''
-    if is_dummy:
-        X = get_dummy_mult()
-        R = read_dummy_user()
-    else:
-        X = get_mult()
-        R = read_user()
-    '''
+    X = loaFeatureData('data/ml-1m/item.txt') # feature matrix
+    R = loadRatingData('data/ml-1m/train.txt') # rating matrix
     # set to INFO to see less information during training
     logging.basicConfig(level=logging.DEBUG)
     #ae_model = AutoEncoderModel(mx.gpu(0), [784,500,500,2000,10], pt_dropout=0.2,
@@ -59,10 +48,9 @@ if __name__ == '__main__':
 
     #ae_model.load('cdl_pt.arg')
     Recon_loss = lambda_v/lv*ae_model.eval(train_X,V,lambda_v_rt)
-    print "Training error: %.3f" % (BCD_loss+Recon_loss)
-    fp = open(dir_save+'/cdl.log','a')
-    fp.write("Training error: %.3f\n" % (BCD_loss+Recon_loss))
-    fp.close()
+    print("Training error: %.3f" % (BCD_loss+Recon_loss))
+    with open(dir_save+'/cdl.log','a') as fp:
+        fp.write("Training error: %.3f\n" % (BCD_loss+Recon_loss))
     #print "Validation error:", ae_model.eval(val_X)
 
     rmse = RMSE(p, 'data/ml-1m/train.txt')
