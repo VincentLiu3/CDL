@@ -1,0 +1,4 @@
+logging==0.4.9.6
+mxnet==0.10.0
+numpy==1.13.0
+scipy==0.19.0
