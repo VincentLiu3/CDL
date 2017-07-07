@@ -41,12 +41,12 @@ if __name__ == '__main__':
 	np.random.seed(1126) # set seed
 
 	lv = 1e-2 # lambda_v/lambda_n in CDL
-	dir_save = 'cdl%d' % p
+	dir_save = 'cdl%d' % args.p
 	if not os.path.isdir(dir_save):
 		os.system('mkdir %s' % dir_save)
-	logging.info('p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d' % (p, args.lambda_v, args.lambda_u,lv, args.K) )  
+	logging.info('p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d' % (args.p, args.lambda_v, args.lambda_u,lv, args.K) )  
 	with open(dir_save+'/cdl.log','w') as fp:
-		fp.write('p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d\n' % (p, args.lambda_v, args.lambda_u,lv, args.K))
+		fp.write('p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d\n' % (args.p, args.lambda_v, args.lambda_u,lv, args.K))
 
 	X = loaFeatureData(args.feat) # feature matrix
 	R = loadRatingData(args.train) # rating matrix
@@ -75,7 +75,7 @@ if __name__ == '__main__':
 		fp.write("Training error: {:.4f}\n".format(BCD_loss+Recon_loss))
 	#print "Validation error:", ae_model.eval(val_X)
 
-	rmse = RMSE(p, args.test)
+	rmse = RMSE(dir_save, args.test)
 	logging.info('RMSE: {:.4f}'.format(rmse))
 	with open(dir_save+'/cdl.log','a') as fp:
 		fp.write('RMSE: {:.4f}\n'.format(rmse))

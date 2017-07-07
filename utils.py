@@ -58,13 +58,12 @@ def loadRatingData(filename='data/ml-1m/train.txt'):
 	R = fData.todense()
 	return R
 
-def RMSE(p, test_data):
+def RMSE(dir_save, test_data):
 	X_test = loadRatingData(test_data)
 	X_test = scipy.sparse.coo_matrix(X_test)
     # read learned U and V
-	dir_save = 'cdl{}/'.format(p)
-	U = np.loadtxt(dir_save+'final-U.dat')
-	V = np.loadtxt(dir_save+'final-V.dat')
+	U = np.loadtxt(dir_save+'/final-U.dat')
+	V = np.loadtxt(dir_save+'/final-V.dat')
 	UV = np.dot(U, V.T)
 	X_prediton = scipy.sparse.coo_matrix((UV[X_test.row, X_test.col], (X_test.row, X_test.col)), shape=X_test.shape)
 	assert( np.all(X_test.row == X_prediton.row) and np.all(X_test.col == X_prediton.col) ), 'predition and origin value must have the same length'
