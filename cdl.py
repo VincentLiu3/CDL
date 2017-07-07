@@ -41,12 +41,12 @@ if __name__ == '__main__':
 	np.random.seed(1126) # set seed
 
 	lv = 1e-2 # lambda_v/lambda_n in CDL
-	dir_save = 'cdl%d' % args.p
+	dir_save = 'cdl{}'.format(args.p)
 	if not os.path.isdir(dir_save):
-		os.system('mkdir %s' % dir_save)
-	logging.info('p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d' % (args.p, args.lambda_v, args.lambda_u,lv, args.K) )  
+		os.mkdir (dir_save)
+	logging.info('{}: lambda_v/lambda_u/ratio/K: {}/{}/{}/{}'.format(dir_save, args.lambda_v, args.lambda_u,lv, args.K) )  
 	with open(dir_save+'/cdl.log','w') as fp:
-		fp.write('p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d\n' % (args.p, args.lambda_v, args.lambda_u,lv, args.K))
+		fp.write('{}: lambda_v/lambda_u/ratio/K: {}/{}/{}/{}\n'.format(dir_save, args.lambda_v, args.lambda_u,lv, args.K))
 
 	X = loaFeatureData(args.feat) # feature matrix
 	R = loadRatingData(args.train) # rating matrix
