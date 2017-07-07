@@ -36,46 +36,46 @@ if __name__ == '__main__':
     test_file = 'data/ml-1m/test.txt'
     feat_file = 'data/ml-1m/item.txt'
     '''
-    # set to INFO to see less information during training
-    logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] %(message)s')
-    np.random.seed(1126) # set seed
+	# set to INFO to see less information during training
+	logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] %(message)s')
+	np.random.seed(1126) # set seed
 
-    lv = 1e-2 # lambda_v/lambda_n in CDL
-    dir_save = 'cdl%d' % p
-    if not os.path.isdir(dir_save):
-        os.system('mkdir %s' % dir_save)
-    logging.info('p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d' % (p, args.lambda_v, args.lambda_u,lv, args.K) )  
-    with open(dir_save+'/cdl.log','w') as fp:
-        fp.write('p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d\n' % (p, args.lambda_v, args.lambda_u,lv, args.K))
-    
-    X = loaFeatureData(args.feat) # feature matrix
-    R = loadRatingData(args.train) # rating matrix
+	lv = 1e-2 # lambda_v/lambda_n in CDL
+	dir_save = 'cdl%d' % p
+	if not os.path.isdir(dir_save):
+		os.system('mkdir %s' % dir_save)
+	logging.info('p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d' % (p, args.lambda_v, args.lambda_u,lv, args.K) )  
+	with open(dir_save+'/cdl.log','w') as fp:
+		fp.write('p%d: lambda_v/lambda_u/ratio/K: %f/%f/%f/%d\n' % (p, args.lambda_v, args.lambda_u,lv, args.K))
 
-    #ae_model = AutoEncoderModel(mx.gpu(0), [784,500,500,2000,10], pt_dropout=0.2, internal_act='relu', output_act='relu')
-    ae_model = AutoEncoderModel(mx.cpu(2), [X.shape[1], 100, args.K], pt_dropout=0.2, internal_act='relu', output_act='relu')
+	X = loaFeatureData(args.feat) # feature matrix
+	R = loadRatingData(args.train) # rating matrix
 
-    train_X = X
-    #ae_model.layerwise_pretrain(train_X, 256, 50000, 'sgd', l_rate=0.1, decay=0.0, lr_scheduler=mx.misc.FactorScheduler(20000,0.1))
-    #V = np.zeros((train_X.shape[0],10))
-    V = np.random.rand(train_X.shape[0], args.K) / 10
-    lambda_v_rt = np.ones((train_X.shape[0], args.K))*sqrt(lv)
-    U, V, theta, BCD_loss = ae_model.finetune(train_X, R, V, args.lambda_v_rt, args.lambda_u,
-            lambda_v, dir_save, args.batchsize,
-            args.iter, 'sgd', l_rate=0.1, decay=0.0,
-            lr_scheduler=mx.misc.FactorScheduler(20000,0.1))
-    #ae_model.save('cdl_pt.arg')
-    np.savetxt(dir_save+'/final-U.dat',U,fmt='%.5f',comments='')
-    np.savetxt(dir_save+'/final-V.dat',V,fmt='%.5f',comments='')
-    np.savetxt(dir_save+'/final-theta.dat',theta,fmt='%.5f',comments='')
+	#ae_model = AutoEncoderModel(mx.gpu(0), [784,500,500,2000,10], pt_dropout=0.2, internal_act='relu', output_act='relu')
+	ae_model = AutoEncoderModel(mx.cpu(2), [X.shape[1], 100, args.K], pt_dropout=0.2, internal_act='relu', output_act='relu')
 
-    #ae_model.load('cdl_pt.arg')
-    Recon_loss = lambda_v/lv*ae_model.eval(train_X,V,lambda_v_rt)
-    logging.info("Training error: {:.4f}".format(BCD_loss+Recon_loss))
-    with open(dir_save+'/cdl.log','a') as fp:
-        fp.write("Training error: {:.4f}\n".format(BCD_loss+Recon_loss))
-    #print "Validation error:", ae_model.eval(val_X)
+	train_X = X
+	#ae_model.layerwise_pretrain(train_X, 256, 50000, 'sgd', l_rate=0.1, decay=0.0, lr_scheduler=mx.misc.FactorScheduler(20000,0.1))
+	#V = np.zeros((train_X.shape[0],10))
+	V = np.random.rand(train_X.shape[0], args.K) / 10
+	lambda_v_rt = np.ones((train_X.shape[0], args.K))*sqrt(lv)
+	U, V, theta, BCD_loss = ae_model.finetune(train_X, R, V, args.lambda_v_rt, args.lambda_u,
+			lambda_v, dir_save, args.batchsize,
+			args.iter, 'sgd', l_rate=0.1, decay=0.0,
+			lr_scheduler=mx.misc.FactorScheduler(20000,0.1))
+	#ae_model.save('cdl_pt.arg')
+	np.savetxt(dir_save+'/final-U.dat',U,fmt='%.5f',comments='')
+	np.savetxt(dir_save+'/final-V.dat',V,fmt='%.5f',comments='')
+	np.savetxt(dir_save+'/final-theta.dat',theta,fmt='%.5f',comments='')
 
-    rmse = RMSE(p, args.test)
-    logging.info('RMSE: {:.4f}'.format(rmse))
-    with open(dir_save+'/cdl.log','a') as fp:
+	#ae_model.load('cdl_pt.arg')
+	Recon_loss = lambda_v/lv*ae_model.eval(train_X,V,lambda_v_rt)
+	logging.info("Training error: {:.4f}".format(BCD_loss+Recon_loss))
+	with open(dir_save+'/cdl.log','a') as fp:
+		fp.write("Training error: {:.4f}\n".format(BCD_loss+Recon_loss))
+	#print "Validation error:", ae_model.eval(val_X)
+
+	rmse = RMSE(p, args.test)
+	logging.info('RMSE: {:.4f}'.format(rmse))
+	with open(dir_save+'/cdl.log','a') as fp:
 		fp.write('RMSE: {:.4f}\n'.format(rmse))
