@@ -61,7 +61,7 @@ def loadRatingData(filename='data/ml-1m/train.txt'):
 def RMSE(p, test_data):
 	X_test = loadRatingData(test_data)
 	X_test = scipy.sparse.coo_matrix(X_test)
-        # read learned U and V
+    # read learned U and V
 	dir_save = 'cdl{}/'.format(p)
 	U = np.loadtxt(dir_save+'final-U.dat')
 	V = np.loadtxt(dir_save+'final-V.dat')
