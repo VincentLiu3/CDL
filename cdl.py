@@ -59,8 +59,8 @@ if __name__ == '__main__':
 	#V = np.zeros((train_X.shape[0],10))
 	V = np.random.rand(train_X.shape[0], args.K) / 10
 	lambda_v_rt = np.ones((train_X.shape[0], args.K))*sqrt(lv)
-	U, V, theta, BCD_loss = ae_model.finetune(train_X, R, V, args.lambda_v_rt, args.lambda_u,
-			lambda_v, dir_save, args.batchsize,
+	U, V, theta, BCD_loss = ae_model.finetune(train_X, R, V, lambda_v_rt, args.lambda_u,
+			args.lambda_v, dir_save, args.batchsize,
 			args.iter, 'sgd', l_rate=0.1, decay=0.0,
 			lr_scheduler=mx.misc.FactorScheduler(20000,0.1))
 	#ae_model.save('cdl_pt.arg')
@@ -69,7 +69,7 @@ if __name__ == '__main__':
 	np.savetxt(dir_save+'/final-theta.dat',theta,fmt='%.5f',comments='')
 
 	#ae_model.load('cdl_pt.arg')
-	Recon_loss = lambda_v/lv*ae_model.eval(train_X,V,lambda_v_rt)
+	Recon_loss = args.lambda_v/lv*ae_model.eval(train_X,V,lambda_v_rt)
 	logging.info("Training error: {:.4f}".format(BCD_loss+Recon_loss))
 	with open(dir_save+'/cdl.log','a') as fp:
 		fp.write("Training error: {:.4f}\n".format(BCD_loss+Recon_loss))
